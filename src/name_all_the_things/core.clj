@@ -45,3 +45,15 @@
      (->> (cartesian-product all-groups all-groups all-groups)
           (mapcat #(apply cartesian-product %))
           (concat (cartesian-product* true coll coll coll))))))
+;; Probably the solution for avoiding dups is to do it here at the
+;; end.  So instead of using the :when filter in the cartesian product
+;; for generator, post-filter for none of the pairs being equal
+
+;; Also it's not actualy cartesian product that should be selecting
+;; what to call cartesian product on. It should be combinations again,
+;; and then the way we get choose 2 or 3 words is to take 2 or 3 size
+;; combinations.
+
+;; Also, the way to deal with initial collection being different is to
+;; add it to the group by splitting each item inside it into an
+;; individual set.
