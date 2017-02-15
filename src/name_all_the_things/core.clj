@@ -2,21 +2,20 @@
 
 (defn cartesian-product [a b]
   (set
-   (apply concat
-          (for [x a
-                y b]
-            [[x y] [y x]]))))
-
-(defn simple-self-cartesian-product [coll]
-  (set
-   (for [a coll
-         b coll
-         :when (not= a b)]
-     [a b])))
+   (for [x a
+         y b
+         :when (not= x y)]
+     [x y])))
 
 (defn all-cartesian-products
-  ([coll] (simple-self-cartesian-product coll))
-  ([coll & groups]
-   (set
-    (mapcat #(apply cartesian-product %)
-            (simple-self-cartesian-product (conj groups coll))))))
+  "Generate the set of all cartesian products of the given sets.
+
+  The Cartesian square of the first set is included in the set of
+  pairs returned. The remaining
+  "
+  [coll & groups]
+  (let [all-groups (conj groups coll)]
+    (set
+     (->> (cartesian-product all-groups all-groups)
+          (mapcat #(apply cartesian-product %))
+          (concat (cartesian-product coll coll))))))
