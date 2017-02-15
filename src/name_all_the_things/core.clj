@@ -1,11 +1,23 @@
-(ns name-all-the-things.core)
+(ns name-all-the-things.core
+  (:require [clojure.math.combinatorics :refer [combinations]]))
 
-(defn cartesian-product [a b]
-  (set
-   (for [x a
-         y b
-         :when (not= x y)]
-     [x y])))
+(defn all-pairs-equality-checks [item-syms]
+  `(and
+    ~@(map (fn [[x y]] `(not= ~x ~y)) (combinations item-syms 2))))
+
+(defmacro cartesian-product* [& colls]
+  (let [item-syms (repeatedly (count colls) #(gensym "item"))]
+    `(set
+      (for ~(vec (concat
+                  (interleave item-syms colls)
+                  [:when (all-pairs-equality-checks item-syms)]))
+        ~(vec item-syms)))))
+
+(defn cartesian-product
+  ([a b]
+   (cartesian-product* a b))
+  ([a b c]
+   (cartesian-product* a b c)))
 
 (defn all-cartesian-products
   "Generate the set of all cartesian products of the given sets.
