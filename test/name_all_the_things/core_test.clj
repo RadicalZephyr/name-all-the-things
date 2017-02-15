@@ -17,20 +17,59 @@
                               (clojure.core/not= b c))
            (sut/all-pairs-equality-checks ['a 'b 'c]))))
 
-(t/deftest test-all-cartesian-products
+(t/deftest test-all-cartesian-product-pairs
   (t/is (= #{[1  'c] ['c  1]
              [:a 'c] ['c :a]
              [:a  1] [ 1 :a]}
-           (sut/all-cartesian-products #{}
-                                       #{1}
-                                       #{:a}
-                                       #{'c})))
+           (sut/all-cartesian-product-pairs #{}
+                                            #{1}
+                                            #{:a}
+                                            #{'c})))
 
   (t/is (= #{["def" "abc"] ["abc" "def"]}
-           (sut/all-cartesian-products #{"abc" "def"})))
+           (sut/all-cartesian-product-pairs #{"abc" "def"})))
 
   (t/is (= #{["def" "abc"] ["abc" "def"]
              ["def" 1] [1 "def"]
              ["abc" 1] [1 "abc"]}
-           (sut/all-cartesian-products #{"abc" "def"}
-                                       #{1}))))
+           (sut/all-cartesian-product-pairs #{"abc" "def"}
+                                            #{1}))))
+
+(t/deftest test-all-cartesian-product-triples
+  (t/is (= #{[1  :a 'c]
+             [1  'c :a]
+             ['c  1 :a]
+             ['c  :a 1]
+             [:a  'c 1]
+             [:a  1 'c]}
+           (sut/all-cartesian-product-triples #{}
+                                              #{1}
+                                              #{:a}
+                                              #{'c})))
+
+  (t/is (= #{}
+           (sut/all-cartesian-product-triples #{"abc" "def"})))
+
+  (t/is (= #{[1 "def" "abc"]
+             [1 "abc" "def"]
+             ["abc" 1 "def"]
+             ["abc" "def" 1]
+             ["def" "abc" 1]
+             ["def" 1 "abc"]}
+           (sut/all-cartesian-product-triples #{"abc" "def"}
+                                              #{1})))
+
+  (t/is (= #{[1 "def" "abc"]
+             [1 "abc" "def"]
+             ["abc" 1 "def"]
+             ["abc" "def" 1]
+             ["def" "abc" 1]
+             ["def" 1 "abc"]
+             [2 "def" "abc"]
+             [2 "abc" "def"]
+             ["abc" 2 "def"]
+             ["abc" "def" 2]
+             ["def" "abc" 2]
+             ["def" 2 "abc"]}
+           (sut/all-cartesian-product-triples #{"abc" "def"}
+                                              #{1 2}))))
