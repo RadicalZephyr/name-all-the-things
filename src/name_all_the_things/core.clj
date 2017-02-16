@@ -1,10 +1,10 @@
 (ns name-all-the-things.core
-  (:require [clojure.math.combinatorics :refer [cartesian-product combinations]]))
+  (:require [clojure.math.combinatorics :as c]))
 
 (defn any-duplicates? [tuple]
   (boolean
    (some #(apply = %)
-         (combinations tuple 2))))
+         (c/combinations tuple 2))))
 
 (defn name-tuples
   "Generate n-tuples from the given collections.
@@ -15,6 +15,7 @@
   [n main-group & groups]
   (let [all-groups (concat groups (map hash-set (set main-group)))]
     (set
-     (->> (combinations all-groups n)
-          (mapcat #(apply cartesian-product %))
-          (remove any-duplicates?)))))
+     (->> (c/combinations all-groups n)
+          (mapcat #(apply c/cartesian-product %))
+          (remove any-duplicates?)
+          (mapcat c/permutations)))))
